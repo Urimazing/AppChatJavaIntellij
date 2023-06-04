@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.MouseInputAdapter;
-
+import Client.GUI.MessengerUI;
 import static Server.Server.*;
 import Client.GUI.register;
 
@@ -120,6 +120,14 @@ public class login extends JFrame {
                     if (resultSet.next()) {
                         // Đăng nhập thành công
                         System.out.println("Login successful");
+                        // Mở giao diện MessengerUI
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                MessengerUI messengerUI = new MessengerUI();
+                                messengerUI.setVisible(true);
+                            }
+                        });
+
 
                         // Thực hiện các hành động cần thiết sau khi đăng nhập thành công
 
@@ -179,6 +187,8 @@ public class login extends JFrame {
             }
         });
     }
+
+
 
 }
 

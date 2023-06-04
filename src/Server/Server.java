@@ -40,22 +40,59 @@ public class Server {
             String jsonMessage = inputStream.readUTF();
 
             // Parse the JSON message
-            JSONObject message = new JSONObject(jsonMessage);
+            JSONObject registerInfo = new JSONObject(jsonMessage);
 
-            // Extract the message content, timestamp, image path, and file path
-            String content = message.getString("content");
-            long timestamp = message.getLong("timestamp");
-            String imagePath = message.getString("imagePath");
-            String filePath = message.getString("filePath");
+            // Extract the registration information
+            String username = registerInfo.getString("username");
+            String password = registerInfo.getString("password");
+            String number = registerInfo.getString("number");
+            String email = registerInfo.getString("email");
 
-            // Save the message to the database
-            saveMessage(content, timestamp, imagePath, filePath);
+            // Save the user registration to the database
+            saveUserRegistration(username, password, number, email);
 
             // Close the client socket
             clientSocket.close();
         } catch (IOException | JSONException | SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private static synchronized void saveUserRegistration(String username, String password, String number, String email)
+            throws SQLException {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            // Insert the user registration into the Users table
+            String insertQuery = "INSERT INTO Users (username, password, number, email) VALUES (?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, number);
+            preparedStatement.setString(4, email);
+            preparedStatement.executeUpdate();
+        }
+//        try {
+//            DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
+//
+//            // Read the JSON message from the client
+//            String jsonMessage = inputStream.readUTF();
+//
+//            // Parse the JSON message
+//            JSONObject message = new JSONObject(jsonMessage);
+//
+//            // Extract the message content, timestamp, image path, and file path
+//            String content = message.getString("content");
+//            long timestamp = message.getLong("timestamp");
+//            String imagePath = message.getString("imagePath");
+//            String filePath = message.getString("filePath");
+//
+//            // Save the message to the database
+//            saveMessage(content, timestamp, imagePath, filePath);
+//
+//            // Close the client socket
+//            clientSocket.close();
+//        } catch (IOException | JSONException | SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static synchronized void saveMessage(String content, long timestamp, String imagePath, String filePath)
