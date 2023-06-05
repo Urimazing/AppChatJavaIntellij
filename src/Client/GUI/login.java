@@ -134,6 +134,8 @@ public class login extends JFrame {
                     } else {
                         // Đăng nhập không thành công
                         System.out.println("Login failed");
+                        JOptionPane.showMessageDialog(null, "Login fail", "Warning", JOptionPane.WARNING_MESSAGE);
+                        return;
                     }
 
                     // Đóng kết nối và giải phóng tài nguyên

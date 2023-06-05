@@ -118,24 +118,25 @@ public class register extends JFrame {
 
         JLabel label = new JLabel("");
         label.setBounds(23, 21, 432, 213);
+        label.setIcon(new ImageIcon("C:\\Users\\TGDD\\IdeaProjects\\AppChatJavaSwing\\src\\icon\\hinhanh.png.png"));
         contentPane.add(label);
 
-        JLabel lblNewLabel_1 = new JLabel("User name:");
+        JLabel lblNewLabel_1 = new JLabel("");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblNewLabel_1.setBounds(366, 63, 99, 19);
         contentPane.add(lblNewLabel_1);
 
-        JLabel lblNewLabel_2 = new JLabel("Password:");
+        JLabel lblNewLabel_2 = new JLabel("");
         lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblNewLabel_2.setBounds(366, 104, 99, 19);
         contentPane.add(lblNewLabel_2);
 
-        JLabel lblNewLabel_3 = new JLabel("Number:");
+        JLabel lblNewLabel_3 = new JLabel("");
         lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblNewLabel_3.setBounds(366, 145, 99, 19);
         contentPane.add(lblNewLabel_3);
 
-        JLabel lblNewLabel_4 = new JLabel("Email:");
+        JLabel lblNewLabel_4 = new JLabel("");
         lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblNewLabel_4.setBounds(366, 186, 99, 19);
         contentPane.add(lblNewLabel_4);

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class Server {
     private static final int PORT = 5000;
-    public static final String DB_URL = "jdbc:mysql://localhost:3306/appchat";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/appchatjava";
     public static final String DB_USERNAME = "root";
     public static final String DB_PASSWORD = "";
 
@@ -43,13 +43,13 @@ public class Server {
             JSONObject registerInfo = new JSONObject(jsonMessage);
 
             // Extract the registration information
-            String username = registerInfo.getString("username");
-            String password = registerInfo.getString("password");
-            String number = registerInfo.getString("number");
-            String email = registerInfo.getString("email");
+            String Tusername = registerInfo.getString("username");
+            String Tpassword = registerInfo.getString("password");
+            String Inumber = registerInfo.getString("number");
+            String Temail = registerInfo.getString("email");
 
             // Save the user registration to the database
-            saveUserRegistration(username, password, number, email);
+            saveUserRegistration(Tusername, Tpassword, Inumber, Temail);
 
             // Close the client socket
             clientSocket.close();
@@ -62,12 +62,12 @@ public class Server {
             throws SQLException {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
             // Insert the user registration into the Users table
-            String insertQuery = "INSERT INTO Users (username, password, number, email) VALUES (?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO Users (Tusername, Tpassword, Temail, Inumber) VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
-            preparedStatement.setString(3, number);
-            preparedStatement.setString(4, email);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, number);
             preparedStatement.executeUpdate();
         }
 //        try {
