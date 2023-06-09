@@ -11,6 +11,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLException;
+
+import static Server.Server.getFriendsFromDatabase;
 
 
 public class MessengerUI extends JFrame {
@@ -25,54 +34,21 @@ public class MessengerUI extends JFrame {
         getContentPane().setBackground(new Color(255, 255, 255));
         setLayout(null);
 
-        // Tạo danh sách bạn bè
+        // Khởi tạo friendListModel và lấy danh sách bạn bè từ cơ sở dữ liệu
         friendListModel = new DefaultListModel<>();
-        friendListModel.addElement(new Friend("Friend 1", "avatar1.jpg"));
-        friendListModel.addElement(new Friend("Friend 2", "avatar2.jpg"));
-        friendListModel.addElement(new Friend("Friend 3", "avatar3.jpg"));
-        friendListModel.addElement(new Friend("Friend 4", "avatar4.jpg"));
-        friendListModel.addElement(new Friend("Friend 5", "avatar5.jpg"));
-        friendListModel.addElement(new Friend("Friend 6", "avatar6.jpg"));
-        friendListModel.addElement(new Friend("Friend 7", "avatar7.jpg"));
-        friendListModel.addElement(new Friend("Friend 8", "avatar8.jpg"));
-        friendListModel.addElement(new Friend("Friend 9", "avatar9.jpg"));
-        friendListModel.addElement(new Friend("Friend 10", "avatar10.jpg"));
-        friendListModel.addElement(new Friend("Friend 1", "avatar1.jpg"));
-        friendListModel.addElement(new Friend("Friend 2", "avatar2.jpg"));
-        friendListModel.addElement(new Friend("Friend 3", "avatar3.jpg"));
-        friendListModel.addElement(new Friend("Friend 4", "avatar4.jpg"));
-        friendListModel.addElement(new Friend("Friend 5", "avatar5.jpg"));
-        friendListModel.addElement(new Friend("Friend 6", "avatar6.jpg"));
-        friendListModel.addElement(new Friend("Friend 7", "avatar7.jpg"));
-        friendListModel.addElement(new Friend("Friend 8", "avatar8.jpg"));
-        friendListModel.addElement(new Friend("Friend 9", "avatar9.jpg"));
-        friendListModel.addElement(new Friend("Friend 10", "avatar10.jpg"));
-        friendListModel.addElement(new Friend("Friend 1", "avatar1.jpg"));
-        friendListModel.addElement(new Friend("Friend 2", "avatar2.jpg"));
-        friendListModel.addElement(new Friend("Friend 3", "avatar3.jpg"));
-        friendListModel.addElement(new Friend("Friend 4", "avatar4.jpg"));
-        friendListModel.addElement(new Friend("Friend 5", "avatar5.jpg"));
-        friendListModel.addElement(new Friend("Friend 6", "avatar6.jpg"));
-        friendListModel.addElement(new Friend("Friend 7", "avatar7.jpg"));
-        friendListModel.addElement(new Friend("Friend 8", "avatar8.jpg"));
-        friendListModel.addElement(new Friend("Friend 9", "avatar9.jpg"));
-        friendListModel.addElement(new Friend("Friend 10", "avatar10.jpg"));
-        friendListModel.addElement(new Friend("Friend 1", "avatar1.jpg"));
-        friendListModel.addElement(new Friend("Friend 2", "avatar2.jpg"));
-        friendListModel.addElement(new Friend("Friend 3", "avatar3.jpg"));
-        friendListModel.addElement(new Friend("Friend 4", "avatar4.jpg"));
-        friendListModel.addElement(new Friend("Friend 5", "avatar5.jpg"));
-        friendListModel.addElement(new Friend("Friend 6", "avatar6.jpg"));
-        friendListModel.addElement(new Friend("Friend 7", "avatar7.jpg"));
-        friendListModel.addElement(new Friend("Friend 8", "avatar8.jpg"));
-        friendListModel.addElement(new Friend("Friend 9", "avatar9.jpg"));
-        friendListModel.addElement(new Friend("Friend 10", "avatar10.jpg"));
+        try {
+            getFriendsFromDatabase(friendListModel);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
 
         friendList = new JList<>(friendListModel);
         friendList.setCellRenderer(new FriendListRenderer());
         JScrollPane friendScrollPane = new JScrollPane(friendList);
         friendScrollPane.setBounds(10, 48, 162, 414);
         add(friendScrollPane);
+
 
         // Vùng hiển thị tin nhắn
         messageArea = new JTextArea();
@@ -87,15 +63,27 @@ public class MessengerUI extends JFrame {
 
         JButton sendButton = new JButton("Send");
         sendButton.setBounds(561, 0, 74, 28);
+//        sendButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                String message = inputField.getText();
+//                messageArea.append("You: " + message + "\n");
+//                inputField.setText("");
+//            }
+//
+//        });
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String message = inputField.getText();
                 messageArea.append("You: " + message + "\n");
                 inputField.setText("");
-            }
 
+                saveMessage("You: " + message);
+            }
         });
+
+
 
         JPanel inputPanel = new JPanel(null);
         inputPanel.setBounds(196, 434, 647, 28);
@@ -127,6 +115,7 @@ public class MessengerUI extends JFrame {
         add(lblNameChatting);
 
 
+
         // Set component positions
         btnGroup.setLocation(97, 0);
         btnMSG.setLocation(10, 0);
@@ -134,7 +123,45 @@ public class MessengerUI extends JFrame {
 
         pack();
         setVisible(true);
+
+
     }
+
+    // Hàm lưu tin nhắn
+    private void saveMessage(String message) {
+        try {
+            File file = new File("messages.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+            writer.write(message + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Hàm load tin nhắn
+    private void loadMessages() {
+        try {
+            File file = new File("messages.txt");
+            if (!file.exists()) {
+                return;
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                messageArea.append(line + "\n");
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void openInforUser() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -183,7 +210,7 @@ public class MessengerUI extends JFrame {
         });
     }
 
-    private class Friend {
+    public static class Friend {
         private String name;
         private String avatarPath;
 
@@ -223,6 +250,20 @@ public class MessengerUI extends JFrame {
             return this;
         }
     }
+    public void MessengerUI() {
+        // Các khai báo khác của giao diện
+
+        // Tạo danh sách bạn bè
+        friendListModel = new DefaultListModel<>();
+        try {
+            getFriendsFromDatabase(friendListModel);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Các thành phần khác của giao diện
+    }
+
 }
 
 
